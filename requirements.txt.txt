@@ -1,0 +1,7 @@
+streamlit==1.63.0
+ultralytics==8.4.135
+opencv-python-headless>=4.10.0
+pandas>=2.2.0
+gTTS>=2.5.0
+fpdf2==2.8.8
+numpy>=1.26.0
