@@ -5,3 +5,4 @@ pandas>=2.2.0
 gTTS>=2.5.0
 fpdf2==2.8.8
 numpy>=1.26.0
+plotly>=5.18.0
