@@ -1,0 +1,10 @@
+streamlit==1.38.0
+ultralytics==8.4.150
+opencv-python-headless==4.10.0.84
+pandas==2.2.2
+numpy==1.26.4
+requests==2.32.3
+gTTS==2.5.1
+fpdf==1.7.2
+plotly==5.24.1
+streamlit-lottie==0.0.3
