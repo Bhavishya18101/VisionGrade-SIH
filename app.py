@@ -229,6 +229,7 @@ def login_screen():
         logo_col1, logo_col2, logo_col3 = st.columns([1, 2, 1])
         with logo_col2:
             try:
+                # FIX: use_column_width for Cloud Compatibility
                 st.image("logo.png", use_column_width=True)
             except:
                 if lottie_ai_scan:
@@ -343,13 +344,20 @@ def farmer_dashboard():
         col1, col2 = st.columns(2)
         with col1:
             mandi_choice = st.selectbox("Destination APMC", ["Sonipat APMC", "Azadpur Mandi", "Karnal Mandi"])
+            
+            # --- NEW FEATURE: Date and Time Pickers ---
+            dropoff_date = st.date_input("Select Drop-off Date", min_value=datetime.now().date())
+            dropoff_time = st.time_input("Select Preferred Time")
+            
             if st.button("Request Grading Slot"):
-                arrival_time = (datetime.now() + timedelta(days=1)).strftime('%I:%M %p')
-                st.success(f"Slot Confirmed at {mandi_choice} for Tomorrow, {arrival_time}.")
+                formatted_date = dropoff_date.strftime("%d %b %Y")
+                formatted_time = dropoff_time.strftime("%I:%M %p")
+                
+                st.success(f"Slot Confirmed at {mandi_choice} on {formatted_date} at {formatted_time}.")
                 
                 phone = get_farmer_mobile(st.session_state.farmer_token)
                 if phone:
-                    msg = f"VisionGrade: {st.session_state.username}, slot at {mandi_choice} confirmed for {arrival_time}. ID: {st.session_state.farmer_token}."
+                    msg = f"VisionGrade: {st.session_state.username}, slot at {mandi_choice} confirmed for {formatted_date} at {formatted_time}. ID: {st.session_state.farmer_token}."
                     with st.spinner("Dispatching secure WhatsApp confirmation..."):
                         if send_free_whatsapp(phone, msg):
                             st.toast("WhatsApp confirmation sent successfully.", icon="✅")
@@ -367,6 +375,8 @@ def farmer_dashboard():
             df['Payout'] = df['payout'].apply(lambda x: f"₹ {x:,.2f}")
             display_df = df[['date', 'batch_id', 'quantity', 'Agmark Distribution (A/B/C)', 'Payout']]
             display_df.columns = ["Timestamp", "Batch ID", "Total Units", "Agmark Distribution (A/B/C)", "Net Payout"]
+            
+            # FIX: Removed use_container_width for Cloud Compatibility
             st.dataframe(display_df, hide_index=True)
         else:
             st.info("No records found. Submit your first batch to the Mandi Manager.")
@@ -380,7 +390,6 @@ def manager_dashboard():
         st.divider()
         st.markdown("**Hardware Calibration**")
         model_source = st.text_input("Model Weights", "best.pt")
-        # INCREASING DEFAULT CONFIDENCE TO 0.55 TO ELIMINATE BACKGROUND NOISE
         pixels_per_mm = st.slider("Scale (px/mm)", 1.0, 5.0, 2.5, 0.1)
         conf_thresh = st.slider("AI Confidence", 0.05, 0.9, 0.55, 0.05)
         defect_sensitivity = st.slider(
@@ -423,6 +432,7 @@ def manager_dashboard():
                     start_t = time.time()
                     annotated_frame, summary = vision.process_frame(frame)
                     st.session_state.latency = round((time.time() - start_t) * 1000, 2)
+                    # FIX: use_column_width for Cloud Compatibility
                     st.image(cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB), use_column_width=True)
                     st.session_state.current_summary = summary
                     
@@ -434,6 +444,7 @@ def manager_dashboard():
                     start_t = time.time()
                     annotated_frame, summary = vision.process_frame(frame)
                     st.session_state.latency = round((time.time() - start_t) * 1000, 2)
+                    # FIX: use_column_width for Cloud Compatibility
                     st.image(cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB), use_column_width=True)
                     st.session_state.current_summary = summary
 
@@ -499,6 +510,8 @@ def manager_dashboard():
                 fig.update_layout(template="plotly_dark", plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)", showlegend=False)
                 fig.update_xaxes(showgrid=False)
                 fig.update_yaxes(showgrid=True, gridcolor='#1E293B')
+                
+                # FIX: Removed use_container_width for Cloud Compatibility
                 st.plotly_chart(fig)
             else:
                 st.info("No batches processed today.")
@@ -513,14 +526,18 @@ def manager_dashboard():
         
         if not df_audit.empty:
             df_audit.columns = ["Timestamp", "Batch ID", "Farmer Name", "Farmer Token", "Units", "Payout (INR)"]
+            
+            # FIX: Removed use_container_width for Cloud Compatibility
             st.dataframe(df_audit, hide_index=True)
             
             c_a, c_b = st.columns(2)
             with c_a:
                 csv = df_audit.to_csv(index=False).encode('utf-8')
+                # FIX: Removed use_container_width for Cloud Compatibility
                 st.download_button("📥 Export CSV Log", data=csv, file_name="Mandi_Audit.csv", mime="text/csv")
             with c_b:
                 if 'latest_pdf' in st.session_state:
+                    # FIX: Removed use_container_width for Cloud Compatibility
                     st.download_button("🖨️ Download Last Receipt", data=st.session_state.latest_pdf, file_name="Receipt.pdf", mime="application/pdf")
 
 # --- 6. ROUTER ---
