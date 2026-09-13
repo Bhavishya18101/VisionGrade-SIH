@@ -229,7 +229,7 @@ def login_screen():
         logo_col1, logo_col2, logo_col3 = st.columns([1, 2, 1])
         with logo_col2:
             try:
-                st.image("logo.png", use_container_width=True)
+                st.image("logo.png", use_column_width=True)
             except:
                 if lottie_ai_scan:
                     st_lottie(lottie_ai_scan, height=150, key="login_anim")
@@ -367,7 +367,7 @@ def farmer_dashboard():
             df['Payout'] = df['payout'].apply(lambda x: f"₹ {x:,.2f}")
             display_df = df[['date', 'batch_id', 'quantity', 'Agmark Distribution (A/B/C)', 'Payout']]
             display_df.columns = ["Timestamp", "Batch ID", "Total Units", "Agmark Distribution (A/B/C)", "Net Payout"]
-            st.dataframe(display_df, hide_index=True, use_container_width=True)
+            st.dataframe(display_df, hide_index=True)
         else:
             st.info("No records found. Submit your first batch to the Mandi Manager.")
 
@@ -423,7 +423,7 @@ def manager_dashboard():
                     start_t = time.time()
                     annotated_frame, summary = vision.process_frame(frame)
                     st.session_state.latency = round((time.time() - start_t) * 1000, 2)
-                    st.image(cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB), use_container_width=True)
+                    st.image(cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB), use_column_width=True)
                     st.session_state.current_summary = summary
                     
             elif input_mode == "Upload File":
@@ -434,7 +434,7 @@ def manager_dashboard():
                     start_t = time.time()
                     annotated_frame, summary = vision.process_frame(frame)
                     st.session_state.latency = round((time.time() - start_t) * 1000, 2)
-                    st.image(cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB), use_container_width=True)
+                    st.image(cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB), use_column_width=True)
                     st.session_state.current_summary = summary
 
         with col_data:
@@ -499,7 +499,7 @@ def manager_dashboard():
                 fig.update_layout(template="plotly_dark", plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)", showlegend=False)
                 fig.update_xaxes(showgrid=False)
                 fig.update_yaxes(showgrid=True, gridcolor='#1E293B')
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig)
             else:
                 st.info("No batches processed today.")
         else:
@@ -513,15 +513,15 @@ def manager_dashboard():
         
         if not df_audit.empty:
             df_audit.columns = ["Timestamp", "Batch ID", "Farmer Name", "Farmer Token", "Units", "Payout (INR)"]
-            st.dataframe(df_audit, hide_index=True, use_container_width=True)
+            st.dataframe(df_audit, hide_index=True)
             
             c_a, c_b = st.columns(2)
             with c_a:
                 csv = df_audit.to_csv(index=False).encode('utf-8')
-                st.download_button("📥 Export CSV Log", data=csv, file_name="Mandi_Audit.csv", mime="text/csv", use_container_width=True)
+                st.download_button("📥 Export CSV Log", data=csv, file_name="Mandi_Audit.csv", mime="text/csv")
             with c_b:
                 if 'latest_pdf' in st.session_state:
-                    st.download_button("🖨️ Download Last Receipt", data=st.session_state.latest_pdf, file_name="Receipt.pdf", mime="application/pdf", use_container_width=True)
+                    st.download_button("🖨️ Download Last Receipt", data=st.session_state.latest_pdf, file_name="Receipt.pdf", mime="application/pdf")
 
 # --- 6. ROUTER ---
 if not st.session_state.logged_in:
